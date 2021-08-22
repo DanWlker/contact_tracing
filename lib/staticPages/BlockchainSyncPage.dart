@@ -10,10 +10,70 @@ class BlockchainSyncPage extends StatefulWidget {
 class _BlockchainSyncPageState extends State<BlockchainSyncPage> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Center(
-        child: Text("Blockchain Sync Page"),
+    return Stack(
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            children: [
+              TextField(
+                decoration: InputDecoration(
+                  labelText: "Sync to address: "
+                ),
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Matches Found:",
+                    style: TextStyle(fontSize: 20)
+                  )
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Expanded(
+                child: ListView(
+                  children: generateLists(),
+                )
+              )
+            ],
+          ),
+        ),
+        Positioned(
+          bottom: 20,
+            right: 20,
+            child: FloatingActionButton.extended(
+             onPressed: () {
+               //@Todo implment sync on button press
+             },
+              icon: Icon(Icons.sync),
+              label: Text("Tap to sync"),
+            )
+        )
+
+      ],
+    );
+  }
+
+  List<Widget> generateLists() {
+    List<Widget> temp = [];
+    for(int i = 0; i < 15; ++i) {
+      temp.add(returnExample());
+    }
+    return temp;
+  }
+
+  ListTile returnExample() {
+    return ListTile(
+      title: Text('Three-line ListTile'),
+      subtitle: Text(
+          'A sufficiently long subtitle warrants three lines.'
       ),
+
+      isThreeLine: true,
     );
   }
 }

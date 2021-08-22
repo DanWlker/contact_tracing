@@ -51,6 +51,7 @@ class _PagesState extends State<Pages> {
       ),
       drawer: NavDrawer(onTabTapped),
       body: currentChildren[currentIndex],
+
     );
   }
 
