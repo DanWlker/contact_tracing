@@ -1,13 +1,13 @@
 import 'Case.dart';
 
-class BlockchainCommunicationWrapper {
+class BlockchainUpCommWrapper {
   String? publicKey;
   Case? ledger;
   String? signature;
 
-  BlockchainCommunicationWrapper({this.publicKey, this.ledger, this.signature});
+  BlockchainUpCommWrapper({this.publicKey, this.ledger, this.signature});
 
-  BlockchainCommunicationWrapper.fromJson(Map<String, dynamic> json) {
+  BlockchainUpCommWrapper.fromJson(Map<String, dynamic> json) {
     publicKey = json['publicKey'];
     ledger =
     json['ledger'] != null ? new Case.fromJson(json['ledger']) : null;
