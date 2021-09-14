@@ -1,12 +1,11 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 class NavDrawer extends StatelessWidget{
 
   Function onItemTap;
+  List<String> navigationTitles;
 
-  NavDrawer(this.onItemTap);
+  NavDrawer(this.onItemTap, this.navigationTitles);
 
   @override
   Widget build(BuildContext context) {
@@ -14,30 +13,29 @@ class NavDrawer extends StatelessWidget{
     return Drawer(
         child: ListView(
           padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
-          children: [
-            ListTile(
-              title: navTextComponent("Proximity Detection"),
-              onTap: () {
-                onItemTap(0);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: navTextComponent("Blockchain Sync"),
-              onTap: () {
-                onItemTap(1);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: navTextComponent("Settings"),
-              onTap: () {
-                onItemTap(2);
-                Navigator.pop(context);
-              },
-            )
-          ],
+          children: navigationComponentList(context),
         )
+    );
+  }
+
+  List<Widget> navigationComponentList(BuildContext context) {
+    List<Widget> temp = [];
+    navigationTitles.asMap().forEach((index, element) {
+      temp.add(
+        navigationComponent(context, element, index)
+      );
+    });
+
+    return temp;
+  }
+
+  ListTile navigationComponent(BuildContext context, String title, int index) {
+    return ListTile(
+      title: navTextComponent(title),
+      onTap: () {
+        onItemTap(index);
+        Navigator.pop(context);
+      },
     );
   }
 

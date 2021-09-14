@@ -1,4 +1,7 @@
 import 'package:contact_tracing/NavDrawer.dart';
+import 'package:contact_tracing/ProximityTasks/BluetoothProximityDetection.dart';
+import 'package:contact_tracing/ProximityTasks/SoundProximityDetection.dart';
+import 'package:contact_tracing/ProximityTasks/WifiProximityDetection.dart';
 import 'package:flutter/material.dart';
 import 'package:contact_tracing/staticPages/ProximityDetectionPage.dart';
 import 'package:contact_tracing/staticPages/BlockchainSyncPage.dart';
@@ -33,14 +36,16 @@ class Pages extends StatefulWidget {
 class _PagesState extends State<Pages> {
   int currentIndex = 0;
   List<Widget> currentChildren = [
-    ProximityDetectionPage(),
+    ProximityDetectionPage(onButtonPressed: BluetoothProximityDetection.instance.printStuff),
+    ProximityDetectionPage(onButtonPressed: WifiProximityDetection.instance.printStuff),
+    ProximityDetectionPage(onButtonPressed: SoundProximityDetection.instance.printStuff),
     BlockchainSyncPage(),
-    SettingsPage(),
   ];
   List<String> titleStrings = [
-    "Proximity Detection",
+    "Bluetooth Proximity Detection",
+    "Wifi Proximity Detection",
+    "Sound Proximity Detection",
     "Blockchain Sync",
-    "Settings",
   ];
 
   @override
@@ -49,7 +54,7 @@ class _PagesState extends State<Pages> {
       appBar: AppBar(
         title: Text(titleStrings[currentIndex]),
       ),
-      drawer: NavDrawer(onTabTapped),
+      drawer: NavDrawer(onTabTapped, titleStrings),
       body: currentChildren[currentIndex],
 
     );

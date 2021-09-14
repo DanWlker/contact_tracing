@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ProximityDetectionPage extends StatefulWidget {
-  const ProximityDetectionPage({Key? key}) : super(key: key);
+  final Function onButtonPressed;
+
+  const ProximityDetectionPage({Key? key, required this.onButtonPressed}) : super(key: key);
 
   @override
   _ProximityDetectionPageState createState() => _ProximityDetectionPageState();
@@ -36,12 +38,17 @@ class _ProximityDetectionPageState extends State<ProximityDetectionPage> {
         Positioned(
           bottom: 20,
             right: 20,
-            child: FloatingActionButton(
+            child: FloatingActionButton.extended(
               onPressed: (){
                 //@Todo implement show filter options on button press
+                widget.onButtonPressed();
                 },
               tooltip: 'Filter',
-              child: Icon(Icons.settings),
+              icon: Icon(
+                      Icons.arrow_right_sharp,
+                      size: 40,
+                    ),
+              label: Text("Start proximity detection"),
             )
         )
       ],
