@@ -1,34 +1,24 @@
+import 'package:json_annotation/json_annotation.dart';
+
 import 'Case.dart';
 
+part 'Block.g.dart';
+
+@JsonSerializable(explicitToJson: true)
 class Block{
-  String? prevHash;
-  String? time;
-  int? nonce;
-  List<Case>? ledger;
+  String prevHash;
+  String time;
+  int nonce;
+  List<Case> ledger;
 
   Block(
-      {this.prevHash, this.time, this.nonce, this.ledger});
+      this.prevHash,
+      this.time,
+      this.nonce,
+      this.ledger);
 
-  Block.fromJson(Map<String, dynamic> json) {
-    prevHash = json['prevHash'];
-    time = json['time'];
-    nonce = json['nonce'];
-    if (json['ledger'] != null) {
-      ledger = [];
-      json['ledger'].forEach((v) {
-        ledger!.add(new Case.fromJson(v));
-      });
-    }
-  }
+  factory Block.fromJson(Map<String, dynamic> json) => _$BlockFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['prevHash'] = this.prevHash;
-    data['time'] = this.time;
-    data['nonce'] = this.nonce;
-    if (this.ledger != null) {
-      data['ledger'] = this.ledger!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
+  Map<String, dynamic> toJson() => _$BlockToJson(this);
+
 }

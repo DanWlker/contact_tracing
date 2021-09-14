@@ -1,33 +1,23 @@
+import 'package:json_annotation/json_annotation.dart';
+
 import 'IndvCloseContact.dart';
 
+part 'Case.g.dart';
+
+@JsonSerializable(explicitToJson: true)
 class Case {
-  String? uploadedDeviceIdentifier;
-  List<IndvCloseContact>? recordedCases;
-  String? signee;
+  String uploadedDeviceIdentifier;
+  List<IndvCloseContact> recordedCases;
+  String signee;
 
-  Case({this.uploadedDeviceIdentifier, this.recordedCases, this.signee});
+  Case(
+      this.uploadedDeviceIdentifier,
+      this.recordedCases,
+      this.signee);
 
-  Case.fromJson(Map<String, dynamic> json) {
-    uploadedDeviceIdentifier = json['uploadedDeviceIdentifier'];
-    if (json['recordedCases'] != null) {
-      recordedCases = [];
-      json['recordedCases'].forEach((v) {
-        recordedCases!.add(new IndvCloseContact.fromJson(v));
-      });
-    }
-    signee = json['signee'];
-  }
+  factory Case.fromJson(Map<String, dynamic> json) => _$CaseFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['uploadedDeviceIdentifier'] = this.uploadedDeviceIdentifier;
-    if (this.recordedCases != null) {
-      data['recordedCases'] =
-          this.recordedCases!.map((v) => v.toJson()).toList();
-    }
-    data['signee'] = this.signee;
-    return data;
-  }
+  Map<String, dynamic> toJson() => _$CaseToJson(this);
 }
 
 

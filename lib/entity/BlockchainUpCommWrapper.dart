@@ -1,26 +1,22 @@
+import 'package:json_annotation/json_annotation.dart';
+
 import 'Case.dart';
 
+part 'BlockchainUpCommWrapper.g.dart';
+
+@JsonSerializable(explicitToJson: true)
 class BlockchainUpCommWrapper {
-  String? publicKey;
-  Case? ledger;
-  String? signature;
+  String publicKey;
+  Case ledger;
+  String signature;
 
-  BlockchainUpCommWrapper({this.publicKey, this.ledger, this.signature});
+  BlockchainUpCommWrapper(
+      this.publicKey,
+      this.ledger,
+      this.signature);
 
-  BlockchainUpCommWrapper.fromJson(Map<String, dynamic> json) {
-    publicKey = json['publicKey'];
-    ledger =
-    json['ledger'] != null ? new Case.fromJson(json['ledger']) : null;
-    signature = json['signature'];
-  }
+  factory BlockchainUpCommWrapper.fromJson(Map<String, dynamic> json) => _$BlockchainUpCommWrapperFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['publicKey'] = this.publicKey;
-    if (this.ledger != null) {
-      data['ledger'] = this.ledger!.toJson();
-    }
-    data['signature'] = this.signature;
-    return data;
-  }
+  Map<String, dynamic> toJson() => _$BlockchainUpCommWrapperToJson(this);
+
 }
