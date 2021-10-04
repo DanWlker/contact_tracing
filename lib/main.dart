@@ -36,9 +36,18 @@ class Pages extends StatefulWidget {
 class _PagesState extends State<Pages> {
   int currentIndex = 0;
   List<Widget> currentChildren = [
-    ProximityDetectionPage(onButtonPressed: BluetoothProximityDetection.instance.printStuff),
-    ProximityDetectionPage(onButtonPressed: WifiProximityDetection.instance.printStuff),
-    ProximityDetectionPage(onButtonPressed: SoundProximityDetection.instance.printStuff),
+    ProximityDetectionPage(
+      onButtonPressed: BluetoothProximityDetection.instance.toggleProximityScan,
+      checkStarted: BluetoothProximityDetection.instance.getStartStop,
+    ),
+    ProximityDetectionPage(
+      onButtonPressed: WifiProximityDetection.instance.printStuff,
+      checkStarted: () {return false;},
+    ),
+    ProximityDetectionPage(
+      onButtonPressed: SoundProximityDetection.instance.printStuff,
+      checkStarted: () {return false;},
+    ),
     BlockchainSyncPage(),
   ];
   List<String> titleStrings = [

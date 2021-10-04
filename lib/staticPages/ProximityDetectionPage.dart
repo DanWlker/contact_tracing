@@ -2,14 +2,17 @@ import 'package:flutter/material.dart';
 
 class ProximityDetectionPage extends StatefulWidget {
   final Function onButtonPressed;
+  final Function checkStarted;
 
-  const ProximityDetectionPage({Key? key, required this.onButtonPressed}) : super(key: key);
+  const ProximityDetectionPage({Key? key, required this.onButtonPressed, required this.checkStarted}) : super(key: key);
 
   @override
   _ProximityDetectionPageState createState() => _ProximityDetectionPageState();
 }
 
 class _ProximityDetectionPageState extends State<ProximityDetectionPage> {
+  bool isRunning = false;
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -38,17 +41,32 @@ class _ProximityDetectionPageState extends State<ProximityDetectionPage> {
         Positioned(
           bottom: 20,
             right: 20,
-            child: FloatingActionButton.extended(
-              onPressed: (){
-                //@Todo implement show filter options on button press
-                widget.onButtonPressed();
-                },
-              tooltip: 'Filter',
-              icon: Icon(
-                      Icons.arrow_right_sharp,
-                      size: 40,
-                    ),
-              label: Text("Start proximity detection"),
+            child: Column(
+              children: [
+                FloatingActionButton.extended(
+                  onPressed: (){
+                    //@Todo implement show filter options on button press
+                    widget.onButtonPressed(context);
+
+                    if(widget.checkStarted()) {
+                      setState(() {
+                        isRunning = true;
+                      });
+                    } else {
+                      setState(() {
+                        isRunning = false;
+                      });
+                    }
+
+                    },
+                  tooltip: 'Filter',
+                  icon: Icon(
+                          Icons.arrow_right_sharp,
+                          size: 40,
+                        ),
+                  label: isRunning? Text("Stop proximity detection"): Text("Start proximity detection"),
+                ),
+              ],
             )
         )
       ],
