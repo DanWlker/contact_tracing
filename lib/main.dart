@@ -7,6 +7,8 @@ import 'package:contact_tracing/staticPages/ProximityDetectionPage.dart';
 import 'package:contact_tracing/staticPages/BlockchainSyncPage.dart';
 import 'package:contact_tracing/staticPages/SettingsPage.dart';
 
+import 'StaticPages/SQLTestingPage.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -49,12 +51,15 @@ class _PagesState extends State<Pages> {
       checkStarted: () {return false;},
     ),
     BlockchainSyncPage(),
+    SQLTestingPage(),
+
   ];
   List<String> titleStrings = [
     "Bluetooth Proximity Detection",
     "Wifi Proximity Detection",
     "Sound Proximity Detection",
     "Blockchain Sync",
+    "Testing SQLDatabase"
   ];
 
   @override
