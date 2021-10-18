@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class ProximityDetectionPage extends StatefulWidget {
   final Function onButtonPressed;
   final Function checkStarted;
+  final Function disposeMethod;
 
-  const ProximityDetectionPage({Key? key, required this.onButtonPressed, required this.checkStarted}) : super(key: key);
+  const ProximityDetectionPage({Key? key, required this.onButtonPressed, required this.checkStarted, required this.disposeMethod}) : super(key: key);
 
   @override
   _ProximityDetectionPageState createState() => _ProximityDetectionPageState();
@@ -45,7 +46,6 @@ class _ProximityDetectionPageState extends State<ProximityDetectionPage> {
               children: [
                 FloatingActionButton.extended(
                   onPressed: (){
-                    //@Todo implement show filter options on button press
                     widget.onButtonPressed(context);
 
                     if(widget.checkStarted()) {
@@ -90,6 +90,12 @@ class _ProximityDetectionPageState extends State<ProximityDetectionPage> {
 
       isThreeLine: true,
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.disposeMethod();
   }
 }
 

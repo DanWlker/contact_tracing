@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
 }
 
 class Pages extends StatefulWidget {
+  //const Pages({Key key}) : super(key: key);
   const Pages({Key? key}) : super(key: key);
 
   @override
@@ -41,14 +42,17 @@ class _PagesState extends State<Pages> {
     ProximityDetectionPage(
       onButtonPressed: BluetoothProximityDetection.instance.toggleProximityScan,
       checkStarted: BluetoothProximityDetection.instance.getStartStop,
+      disposeMethod: BluetoothProximityDetection.instance.disposeMethod,
     ),
     ProximityDetectionPage(
       onButtonPressed: WifiProximityDetection.instance.printStuff,
       checkStarted: () {return false;},
+      disposeMethod: WifiProximityDetection.instance.disposeMethod,
     ),
     ProximityDetectionPage(
-      onButtonPressed: SoundProximityDetection.instance.printStuff,
-      checkStarted: () {return false;},
+      onButtonPressed: SoundProximityDetection.instance.toggleSignalOnOff,
+      checkStarted: SoundProximityDetection.instance.getIsPlaying,
+      disposeMethod: SoundProximityDetection.instance.disposeMethod,
     ),
     BlockchainSyncPage(),
     SQLTestingPage(),

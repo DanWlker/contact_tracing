@@ -394,6 +394,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  sound_generator:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: master
+      resolved-ref: d580567af83f46b7a598261be614b0e676b5ce1d
+      url: "https://github.com/mertguner/sound_generator"
+    source: git
+    version: "0.0.5"
   source_gen:
     dependency: transitive
     description:

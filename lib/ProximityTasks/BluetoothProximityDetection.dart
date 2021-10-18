@@ -110,4 +110,9 @@ class BluetoothProximityDetection implements ProximityDetection{
     return String.fromCharCodes(List.generate(len, (index) => r.nextInt(33) + 89));
   }
 
+  @override
+  void disposeMethod() {
+    // TODO: implement disposeMethod
+  }
+
 }
