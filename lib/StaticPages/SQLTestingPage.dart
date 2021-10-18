@@ -60,9 +60,17 @@ class _SQLTestingPageState extends State<SQLTestingPage> {
                   select * from CloseContactList where id = ${textEditingControllers[5].text}
                   ''');
                   var dbItem = resultSet.first;
+                  String finalText = "";
                   for(var item in dbItem.values) {
-                    print(item);
+                    finalText = finalText + item.toString() + " ";
                   }
+                  showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                    title: Text('Result for id = ${textEditingControllers[5].text}'),
+                    content: Text(finalText),
+                      )
+                  );
                 },
                 child: Text("Retrieve"),
                 style: TextButton.styleFrom(
