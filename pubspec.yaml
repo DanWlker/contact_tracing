@@ -24,6 +24,8 @@ dependencies:
   flutter:
     sdk: flutter
   json_annotation: ^4.1.0
+  pitch_detector_dart: ^0.0.2
+  flutter_audio_capture: ^1.0.0
   sound_generator:
     git:
       url: https://github.com/mertguner/sound_generator

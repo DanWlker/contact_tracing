@@ -7,6 +7,8 @@ import 'package:contact_tracing/staticPages/ProximityDetectionPage.dart';
 import 'package:contact_tracing/staticPages/BlockchainSyncPage.dart';
 import 'package:contact_tracing/staticPages/SettingsPage.dart';
 
+import 'SoundStuff/SoundListener.dart';
+import 'SoundStuff/SoundPlayer.dart';
 import 'StaticPages/SQLTestingPage.dart';
 
 void main() {
@@ -50,9 +52,9 @@ class _PagesState extends State<Pages> {
       disposeMethod: WifiProximityDetection.instance.disposeMethod,
     ),
     ProximityDetectionPage(
-      onButtonPressed: SoundProximityDetection.instance.toggleSignalOnOff,
-      checkStarted: SoundProximityDetection.instance.getIsPlaying,
-      disposeMethod: SoundProximityDetection.instance.disposeMethod,
+      onButtonPressed: SoundListener.instance.startListener,
+      checkStarted: SoundListener.instance.getIsListening,
+      disposeMethod: SoundListener.instance.dispose,
     ),
     BlockchainSyncPage(),
     SQLTestingPage(),
