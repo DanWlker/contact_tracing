@@ -52,9 +52,9 @@ class _PagesState extends State<Pages> {
       disposeMethod: WifiProximityDetection.instance.disposeMethod,
     ),
     ProximityDetectionPage(
-      onButtonPressed: SoundListener.instance.startListener,
-      checkStarted: SoundListener.instance.getIsListening,
-      disposeMethod: SoundListener.instance.dispose,
+      onButtonPressed: SoundProximityDetection.instance.toggleInternalDelayTest,
+      checkStarted: SoundProximityDetection.instance.getIsTesting,
+      disposeMethod: SoundProximityDetection.instance.disposeMethod,
     ),
     BlockchainSyncPage(),
     SQLTestingPage(),

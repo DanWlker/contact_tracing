@@ -6,7 +6,7 @@ class SoundPlayer {
   static SoundPlayer instance = new SoundPlayer();
   bool isPlaying = false;
 
-  void toggleSignalOnOff() {
+  void toggleSignal() {
     double frequency = 440;
     double balance = 0;
     double volume = 1;
