@@ -8,35 +8,39 @@ import 'package:flutter/cupertino.dart';
 
 class SoundProximityDetection implements ProximityDetection{
   static SoundProximityDetection instance = new SoundProximityDetection();
-  bool isTesting = false;
+  bool isRunning = false;
   int averageDelayMs = 0;
 
   @override
   void printStuff() {
-    // TODO: implement printStuff
     print("This is the Sound page");
   }
 
   void broadcastSignal(BuildContext context) {
     if(this.averageDelayMs == 0) {
+      //TODO:maybe make a pop up or smt here to indicate it is self synchronizing
       _testAverageDelay();
+      return;
     }
 
-    //broadcast signal
-    //start listening for signal's return
+    this.isRunning = true;
+    //TODO:broadcast signal
+    //TODO:start listening for signal's return
   }
 
   void listenForSignal(BuildContext context) {
     if(this.averageDelayMs == 0) {
+      //TODO:maybe make a pop up or smt here to indicate it is self synchronizing
      this._testAverageDelay();
+     return;
     }
 
+    this.isRunning = true;
     //start listening for signal
     SoundListener.instance.toggleListener(this.callbackFunctionForListener);// async or smt
   }
 
   void _testAverageDelay() {
-
     for(int i = 0; i < 3; ++i) {
       //start delay test
       this.startInternalDelayTest();
@@ -51,7 +55,7 @@ class SoundProximityDetection implements ProximityDetection{
       sleep(Duration(seconds:2));
     }
 
-    //calculate average delay
+    //TODO:calculate average delay by dividing the total of the average by 3
   }
 
   void startInternalDelayTest() {
@@ -89,16 +93,16 @@ class SoundProximityDetection implements ProximityDetection{
     SoundPlayer.instance.dispose();
   }
 
-  bool getIsTesting() {
-    return this.isTesting;
+  bool getIsRunning() {
+    return this.isRunning;
   }
 
-  void callbackFunctionForBroadcaster() { //we don't actually use this variable
-
+  void callbackFunctionForBroadcaster() {
+    //TODO:start calculating the distance between two ppl
   }
 
   void callbackFunctionForListener() {
-
+    //TODO:wait for a few seconds minus the delay and broadcast the return signal
   }
 
   void callbackFunctionForInternalDelayTest() {

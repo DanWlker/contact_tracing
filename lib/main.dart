@@ -49,7 +49,7 @@ class _PagesState extends State<Pages> {
     ),
     ProximityDetectionPage(
       onButtonPressed: SoundProximityDetection.instance.broadcastSignal,
-      checkStarted: SoundProximityDetection.instance.getIsTesting,
+      checkStarted: SoundProximityDetection.instance.getIsRunning,
       disposeMethod: SoundProximityDetection.instance.disposeMethod,
     ),
     BlockchainSyncPage(),
