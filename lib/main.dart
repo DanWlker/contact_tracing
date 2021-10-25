@@ -48,7 +48,7 @@ class _PagesState extends State<Pages> {
       disposeMethod: WifiProximityDetection.instance.disposeMethod,
     ),
     ProximityDetectionPage(
-      onButtonPressed: SoundProximityDetection.instance.toggleInternalDelayTest,
+      onButtonPressed: SoundProximityDetection.instance.broadcastSignal,
       checkStarted: SoundProximityDetection.instance.getIsTesting,
       disposeMethod: SoundProximityDetection.instance.disposeMethod,
     ),

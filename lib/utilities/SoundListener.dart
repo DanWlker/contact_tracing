@@ -1,6 +1,4 @@
 import 'dart:typed_data';
-
-import 'package:contact_tracing/utilities/StopwatchUtility.dart';
 import 'package:flutter_audio_capture/flutter_audio_capture.dart';
 import 'package:pitch_detector_dart/pitch_detector.dart';
 
@@ -9,8 +7,11 @@ class SoundListener {
   bool isListening = false;
   final _audioRecorder = FlutterAudioCapture();
   final pitchDetectorDart = PitchDetector(44100, 2000);
+  Function callbackFunction = () {};
 
-  void toggleListener() {
+  void toggleListener(Function passedCallbackFunction) {
+    this.callbackFunction = passedCallbackFunction;
+
     if(isListening) {
       _stopCapture();
       this.isListening = false;
@@ -54,13 +55,9 @@ class SoundListener {
     //after listening and processing
     if(
       result.pitch <= 447 &&
-      result.pitch >= 438 &&
-      StopwatchUtility.instance.stopwatch.isRunning
-    ) { //if the frequency is correct or smt
-      print(StopwatchUtility.instance.stopwatch.elapsedMilliseconds);
-      //stop timer
-      StopwatchUtility.instance.stopwatch.stop();
-      StopwatchUtility.instance.stopwatch.reset();
+      result.pitch >= 438
+    ) { //if the frequency is correct or smt, call back the function
+      callbackFunction();
     }
   }
 
