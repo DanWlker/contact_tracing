@@ -1,15 +1,13 @@
-import 'package:contact_tracing/ProximityTasks/ProximityDetection.dart';
-import 'package:contact_tracing/SoundStuff/SoundListener.dart';
-import 'package:contact_tracing/SoundStuff/SoundPlayer.dart';
-import 'package:contact_tracing/Stopwatch/StopwatchUtility.dart';
+import 'package:contact_tracing/proximitytasks/ProximityDetection.dart';
+import 'package:contact_tracing/utilities/SoundListener.dart';
+import 'package:contact_tracing/utilities/SoundPlayer.dart';
+import 'package:contact_tracing/utilities/StopwatchUtility.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:pitch_detector_dart/pitch_detector.dart';
-import 'package:sound_generator/sound_generator.dart';
-import 'package:sound_generator/waveTypes.dart';
 
 class SoundProximityDetection implements ProximityDetection{
   static SoundProximityDetection instance = new SoundProximityDetection();
   bool isTesting = false;
+  double averageDelayMs = 0;
 
   @override
   void printStuff() {
@@ -18,6 +16,10 @@ class SoundProximityDetection implements ProximityDetection{
   }
 
   void toggleInternalDelayTest(BuildContext context) {
+    if(averageDelayMs == 0) {
+      _testAverageDelay();
+    }
+
     if(this.isTesting) {
       stopInternalDelayTest();
       this.isTesting = false;
@@ -25,6 +27,25 @@ class SoundProximityDetection implements ProximityDetection{
       startInternalDelayTest();
       this.isTesting = true;
     }
+  }
+
+  void _testAverageDelay() {
+    List<double> values = [];
+
+    for(int i = 0; i < 3; ++i) {
+      //start delay test
+      this.startInternalDelayTest();
+
+      //wait for 3 secs
+
+
+      //stop the test
+      this.stopInternalDelayTest();
+
+      //wait for 2 secs
+    }
+
+    //calculate average delay
   }
 
   void startInternalDelayTest() {

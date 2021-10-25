@@ -1,15 +1,11 @@
 import 'package:contact_tracing/NavDrawer.dart';
-import 'package:contact_tracing/ProximityTasks/BluetoothProximityDetection.dart';
-import 'package:contact_tracing/ProximityTasks/SoundProximityDetection.dart';
-import 'package:contact_tracing/ProximityTasks/WifiProximityDetection.dart';
+import 'package:contact_tracing/proximitytasks/BluetoothProximityDetection.dart';
+import 'package:contact_tracing/proximitytasks/SoundProximityDetection.dart';
+import 'package:contact_tracing/proximitytasks/WifiProximityDetection.dart';
 import 'package:flutter/material.dart';
-import 'package:contact_tracing/staticPages/ProximityDetectionPage.dart';
-import 'package:contact_tracing/staticPages/BlockchainSyncPage.dart';
-import 'package:contact_tracing/staticPages/SettingsPage.dart';
-
-import 'SoundStuff/SoundListener.dart';
-import 'SoundStuff/SoundPlayer.dart';
-import 'StaticPages/SQLTestingPage.dart';
+import 'package:contact_tracing/static/ProximityDetectionPage.dart';
+import 'package:contact_tracing/static/BlockchainSyncPage.dart';
+import 'static/SQLTestingPage.dart';
 
 void main() {
   runApp(MyApp());

@@ -1,7 +1,5 @@
-
 import 'dart:math';
-
-import 'package:contact_tracing/ProximityTasks/ProximityDetection.dart';
+import 'package:contact_tracing/proximitytasks/ProximityDetection.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_connections/nearby_connections.dart';
 

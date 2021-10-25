@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:sound_generator/sound_generator.dart';
 import 'package:sound_generator/waveTypes.dart';
 

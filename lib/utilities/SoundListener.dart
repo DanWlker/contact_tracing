@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:contact_tracing/Stopwatch/StopwatchUtility.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:contact_tracing/utilities/StopwatchUtility.dart';
 import 'package:flutter_audio_capture/flutter_audio_capture.dart';
 import 'package:pitch_detector_dart/pitch_detector.dart';
 
