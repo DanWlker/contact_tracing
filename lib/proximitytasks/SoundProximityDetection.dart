@@ -10,6 +10,7 @@ class SoundProximityDetection implements ProximityDetection{
   static SoundProximityDetection instance = new SoundProximityDetection();
   bool isRunning = false;
   int averageDelayMs = 0;
+  int testsRunned = 0;
 
   @override
   void printStuff() {
@@ -28,6 +29,7 @@ class SoundProximityDetection implements ProximityDetection{
     //TODO:broadcast signal
     SoundPlayer.instance.toggleSignal();
     sleep(Duration(seconds:1));
+    SoundPlayer.instance.toggleSignal();
     //TODO:start listening for signal's return
     SoundListener.instance.toggleListener(this.callbackFunctionForBroadcaster);
   }
@@ -45,22 +47,25 @@ class SoundProximityDetection implements ProximityDetection{
   }
 
   void _testAverageDelay() {
-    for(int i = 0; i < 3; ++i) {
-      //start delay test
-      this.startInternalDelayTest();
+    this.startInternalDelayTest();
+    //
+    // for(int i = 0; i < 3; ++i) {
+    //   //start delay test
+    //   this.startInternalDelayTest();
+    //
+    //   //wait for 3 secs
+    //   sleep(Duration(seconds:3));
+    //
+    //   //stop the test if the function hasn't complete, if complete it will have already been stopped
+    //   this.stopInternalDelayTest();
+    //
+    //   //wait for 2 secs
+    //   sleep(Duration(seconds:2));
+    // }
 
-      //wait for 3 secs
-      sleep(Duration(seconds:3));
+    // //TODO:calculate average delay by dividing the total of the average by 3
+    // averageDelayMs = averageDelayMs ~/ 3;
 
-      //stop the test if the function hasn't complete, if complete it will have already been stopped
-      this.stopInternalDelayTest();
-
-      //wait for 2 secs
-      sleep(Duration(seconds:2));
-    }
-
-    //TODO:calculate average delay by dividing the total of the average by 3
-    averageDelayMs = averageDelayMs ~/ 3;
   }
 
   void startInternalDelayTest() {
@@ -90,6 +95,17 @@ class SoundProximityDetection implements ProximityDetection{
       StopwatchUtility.instance.stopwatch.stop();
       StopwatchUtility.instance.stopwatch.reset();
     }
+
+    sleep(Duration(seconds:1));
+
+    //repeat the test, i have no idea how to do otherwise so XD
+    if(testsRunned == 2) {
+      averageDelayMs = averageDelayMs ~/ 3;
+      print("Average delay:" + averageDelayMs.toString());
+    } else {
+      testsRunned += 1;
+      _testAverageDelay();
+    }
   }
 
   @override
@@ -104,19 +120,20 @@ class SoundProximityDetection implements ProximityDetection{
 
   void callbackFunctionForBroadcaster() {
     //TODO:start calculating the distance between two ppl
-    int totalTime = StopwatchUtility.instance.stopwatch.elapsedMilliseconds;
+    int totalTime = StopwatchUtility.instance.stopwatch.elapsedMicroseconds;
     StopwatchUtility.instance.stopwatch.stop();
     StopwatchUtility.instance.stopwatch.reset();
-    int actualTime = totalTime - averageDelayMs - 6000; //minus the internal delay and predefined time to wait
-    double estimatedDistanceInMetres = actualTime * 0.343; //speed of sound is 343m/s, which is 0.343m/ms
-    print(estimatedDistanceInMetres);
+    int actualTime = totalTime - averageDelayMs - 6000000; //minus the internal delay and predefined time to wait
+    print("Time elapsed in microseconds = " + actualTime.toString());
+    double estimatedDistanceInMetres = (actualTime * 0.000343)/2; //speed of sound is 343m/s, which is 0.343m/mcs
+    print("Estimated distance = " + estimatedDistanceInMetres.toString());
   }
 
   void callbackFunctionForListener() {
+    print("listener has heard pitch");
     //TODO:wait for a few seconds minus the delay and broadcast the return signal
-    int waitDurationMilliseconds = 6000 - averageDelayMs; //predefined time to wait
-
-    Future.delayed(Duration(milliseconds: waitDurationMilliseconds), () {
+    int waitDurationMicroseconds = 6000000 - averageDelayMs; //predefined time to wait
+    Future.delayed(Duration(microseconds: waitDurationMicroseconds), () {
       // Here you can write your code
       SoundPlayer.instance.toggleSignal();
       sleep(Duration(seconds: 1));
@@ -125,7 +142,8 @@ class SoundProximityDetection implements ProximityDetection{
   }
 
   void callbackFunctionForInternalDelayTest() {
-    this.averageDelayMs += StopwatchUtility.instance.stopwatch.elapsedMilliseconds;
+    int delayedTime = StopwatchUtility.instance.stopwatch.elapsedMicroseconds;
+    this.averageDelayMs += delayedTime;
     stopInternalDelayTest();
   }
 }
