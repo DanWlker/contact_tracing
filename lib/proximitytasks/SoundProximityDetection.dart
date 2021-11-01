@@ -9,8 +9,8 @@ import 'package:flutter/cupertino.dart';
 class SoundProximityDetection implements ProximityDetection{
   static SoundProximityDetection instance = new SoundProximityDetection();
   bool isRunning = false;
-  int averageDelayMs = 0;
   int testsRunned = 0;
+  double defaultDecibalLevel = 0;
 
   @override
   void printStuff() {
@@ -18,14 +18,12 @@ class SoundProximityDetection implements ProximityDetection{
   }
 
   void broadcastSignal(BuildContext context) {
-    if(this.averageDelayMs == 0) {
-      //TODO:maybe make a pop up or smt here to indicate it is self synchronizing
-      _testAverageDelay();
+    if(this.defaultDecibalLevel == 0) {
+      startOwnSignalLoudnessTest();
       return;
     }
 
     this.isRunning = true;
-    StopwatchUtility.instance.stopwatch.start();
     //TODO:broadcast signal
     SoundPlayer.instance.toggleSignal();
     sleep(Duration(seconds:1));
@@ -35,10 +33,9 @@ class SoundProximityDetection implements ProximityDetection{
   }
 
   void listenForSignal(BuildContext context) {
-    if(this.averageDelayMs == 0) {
-      //TODO:maybe make a pop up or smt here to indicate it is self synchronizing
-     this._testAverageDelay();
-     return;
+    if(this.defaultDecibalLevel == 0) {
+      startOwnSignalLoudnessTest();
+      return;
     }
 
     this.isRunning = true;
@@ -46,41 +43,17 @@ class SoundProximityDetection implements ProximityDetection{
     SoundListener.instance.toggleListener(this.callbackFunctionForListener);// async or smt
   }
 
-  void _testAverageDelay() {
-    this.startInternalDelayTest();
-    //
-    // for(int i = 0; i < 3; ++i) {
-    //   //start delay test
-    //   this.startInternalDelayTest();
-    //
-    //   //wait for 3 secs
-    //   sleep(Duration(seconds:3));
-    //
-    //   //stop the test if the function hasn't complete, if complete it will have already been stopped
-    //   this.stopInternalDelayTest();
-    //
-    //   //wait for 2 secs
-    //   sleep(Duration(seconds:2));
-    // }
-
-    // //TODO:calculate average delay by dividing the total of the average by 3
-    // averageDelayMs = averageDelayMs ~/ 3;
-
-  }
-
-  void startInternalDelayTest() {
+  void startOwnSignalLoudnessTest() {
     if(SoundPlayer.instance.getIsPlaying()) {
       SoundPlayer.instance.toggleSignal(); //stop the sound first if playing
     }
     //start to listen
-    SoundListener.instance.toggleListener(this.callbackFunctionForInternalDelayTest);// async or smt
-    //Start Timer
-    StopwatchUtility.instance.stopwatch.start();
+    SoundListener.instance.toggleListener(this.callbackFunctionOwnSignalLoudnessTest);// async or smt
     //Toggle signal to start playing
     SoundPlayer.instance.toggleSignal();
   }
 
-  void stopInternalDelayTest() {
+  void stopOwnSignalLoudnessTest() {
     //Toggle signal off
     if(SoundPlayer.instance.getIsPlaying()) {
       SoundPlayer.instance.toggleSignal();
@@ -90,21 +63,16 @@ class SoundProximityDetection implements ProximityDetection{
     if(SoundListener.instance.getIsListening()) {
       SoundListener.instance.toggleListener((){});
     }
-    //stop stopwatch
-    if(StopwatchUtility.instance.stopwatch.isRunning) {
-      StopwatchUtility.instance.stopwatch.stop();
-      StopwatchUtility.instance.stopwatch.reset();
-    }
 
     sleep(Duration(seconds:1));
 
     //repeat the test, i have no idea how to do otherwise so XD
     if(testsRunned == 2) {
-      averageDelayMs = averageDelayMs ~/ 3;
-      print("Average delay:" + averageDelayMs.toString());
+      defaultDecibalLevel = defaultDecibalLevel / 3;
+      print("Average decibal:" + defaultDecibalLevel.toString());
     } else {
       testsRunned += 1;
-      _testAverageDelay();
+      startOwnSignalLoudnessTest();
     }
   }
 
@@ -118,21 +86,17 @@ class SoundProximityDetection implements ProximityDetection{
     return this.isRunning;
   }
 
-  void callbackFunctionForBroadcaster() {
-    //TODO:start calculating the distance between two ppl
-    int totalTime = StopwatchUtility.instance.stopwatch.elapsedMicroseconds;
-    StopwatchUtility.instance.stopwatch.stop();
-    StopwatchUtility.instance.stopwatch.reset();
-    int actualTime = totalTime - averageDelayMs - 6000000; //minus the internal delay and predefined time to wait
-    print("Time elapsed in microseconds = " + actualTime.toString());
-    double estimatedDistanceInMetres = (actualTime * 0.000343)/2; //speed of sound is 343m/s, which is 0.343m/mcs
-    print("Estimated distance = " + estimatedDistanceInMetres.toString());
+  void callbackFunctionForBroadcaster(double measuredDecibal) {
+    //After measuring noise level, calculate the distance
+
   }
 
-  void callbackFunctionForListener() {
-    print("listener has heard pitch");
-    //TODO:wait for a few seconds minus the delay and broadcast the return signal
-    int waitDurationMicroseconds = 6000000 - averageDelayMs; //predefined time to wait
+  void callbackFunctionForListener(double measuredDecibal) {
+    //After measuring noise level, calculate distance
+    print(measuredDecibal);
+
+    //TODO: after that return signal
+    int waitDurationMicroseconds = 1000000;
     Future.delayed(Duration(microseconds: waitDurationMicroseconds), () {
       // Here you can write your code
       SoundPlayer.instance.toggleSignal();
@@ -141,9 +105,9 @@ class SoundProximityDetection implements ProximityDetection{
     });
   }
 
-  void callbackFunctionForInternalDelayTest() {
-    int delayedTime = StopwatchUtility.instance.stopwatch.elapsedMicroseconds;
-    this.averageDelayMs += delayedTime;
-    stopInternalDelayTest();
+  void callbackFunctionOwnSignalLoudnessTest(double measuredDecibal) {
+    //After measuring noise level
+    defaultDecibalLevel += measuredDecibal;
+    stopOwnSignalLoudnessTest();
   }
 }

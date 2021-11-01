@@ -48,7 +48,7 @@ class _PagesState extends State<Pages> {
       disposeMethod: WifiProximityDetection.instance.disposeMethod,
     ),
     ProximityDetectionPage(
-      onButtonPressed: SoundProximityDetection.instance.broadcastSignal,
+      onButtonPressed: SoundProximityDetection.instance.listenForSignal,
       checkStarted: SoundProximityDetection.instance.getIsRunning,
       disposeMethod: SoundProximityDetection.instance.disposeMethod,
     ),

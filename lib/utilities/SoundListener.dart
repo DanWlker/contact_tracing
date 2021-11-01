@@ -1,4 +1,5 @@
 import 'dart:typed_data';
+import 'package:contact_tracing/utilities/SoundVolume.dart';
 import 'package:flutter_audio_capture/flutter_audio_capture.dart';
 import 'package:pitch_detector_dart/pitch_detector.dart';
 
@@ -59,7 +60,7 @@ class SoundListener {
     ) { //if the frequency is correct or smt, call back the function
       instance._stopCapture();
       this.isListening = false;
-      callbackFunction();
+      SoundVolume.instance.start(callbackFunction);
     }
   }
 
