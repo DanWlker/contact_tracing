@@ -54,7 +54,6 @@ class _PagesState extends State<Pages> {
     ),
     BlockchainSyncPage(),
     SQLTestingPage(),
-
   ];
   List<String> titleStrings = [
     "Bluetooth Proximity Detection",

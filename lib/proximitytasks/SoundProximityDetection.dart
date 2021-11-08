@@ -5,12 +5,14 @@ import 'package:contact_tracing/utilities/SoundListener.dart';
 import 'package:contact_tracing/utilities/SoundPlayer.dart';
 import 'package:contact_tracing/utilities/StopwatchUtility.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class SoundProximityDetection implements ProximityDetection{
   static SoundProximityDetection instance = new SoundProximityDetection();
   bool isRunning = false;
   int testsRunned = 0;
   double defaultDecibalLevel = 0;
+  late BuildContext bContext;
 
   @override
   void printStuff() {
@@ -18,6 +20,8 @@ class SoundProximityDetection implements ProximityDetection{
   }
 
   void broadcastSignal(BuildContext context) {
+    bContext = context;
+
     if(this.defaultDecibalLevel == 0) {
       startOwnSignalLoudnessTest();
       return;
@@ -33,6 +37,7 @@ class SoundProximityDetection implements ProximityDetection{
   }
 
   void listenForSignal(BuildContext context) {
+    bContext = context;
     if(this.defaultDecibalLevel == 0) {
       startOwnSignalLoudnessTest();
       return;
@@ -88,13 +93,11 @@ class SoundProximityDetection implements ProximityDetection{
 
   void callbackFunctionForBroadcaster(double measuredDecibal) {
     //After measuring noise level, calculate the distance
+    calculateDistance(measuredDecibal);
 
   }
 
   void callbackFunctionForListener(double measuredDecibal) {
-    //After measuring noise level, calculate distance
-    print(measuredDecibal);
-
     //TODO: after that return signal
     int waitDurationMicroseconds = 1000000;
     Future.delayed(Duration(microseconds: waitDurationMicroseconds), () {
@@ -103,11 +106,25 @@ class SoundProximityDetection implements ProximityDetection{
       sleep(Duration(seconds: 1));
       SoundPlayer.instance.toggleSignal();
     });
+
+    //After returning, calculate distance
+    calculateDistance(measuredDecibal);
   }
 
   void callbackFunctionOwnSignalLoudnessTest(double measuredDecibal) {
     //After measuring noise level
     defaultDecibalLevel += measuredDecibal;
     stopOwnSignalLoudnessTest();
+  }
+
+  void calculateDistance(double measuredDecibal) {
+    print(measuredDecibal);
+    showDialog(
+        context: bContext,
+        builder: (_) => AlertDialog(
+          title: Text('Result for decibel = ${measuredDecibal}'),
+          content: Text('Welp'),
+        )
+    );
   }
 }
