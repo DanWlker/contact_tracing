@@ -23,7 +23,10 @@ class SoundListener {
   }
 
   void dispose() {
-    //Ntg i think for now
+    //Toggle signal off
+    if(isListening) {
+      toggleListener((){});
+    }
   }
 
   bool getIsListening() {

@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:contact_tracing/proximitytasks/ProximityDetection.dart';
 import 'package:contact_tracing/utilities/SoundListener.dart';
 import 'package:contact_tracing/utilities/SoundPlayer.dart';
-import 'package:contact_tracing/utilities/StopwatchUtility.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -22,10 +21,10 @@ class SoundProximityDetection implements ProximityDetection{
   void broadcastSignal(BuildContext context) {
     bContext = context;
 
-    if(this.defaultDecibalLevel == 0) {
-      startOwnSignalLoudnessTest();
-      return;
-    }
+    // if(this.defaultDecibalLevel == 0 ) {
+    //   startOwnSignalLoudnessTest();
+    //   return;
+    // }
 
     this.isRunning = true;
     //TODO:broadcast signal
@@ -38,10 +37,10 @@ class SoundProximityDetection implements ProximityDetection{
 
   void listenForSignal(BuildContext context) {
     bContext = context;
-    if(this.defaultDecibalLevel == 0) {
-      startOwnSignalLoudnessTest();
-      return;
-    }
+    // if(this.defaultDecibalLevel == 0) {
+    //   startOwnSignalLoudnessTest();
+    //   return;
+    // }
 
     this.isRunning = true;
     //start listening for signal
@@ -94,7 +93,6 @@ class SoundProximityDetection implements ProximityDetection{
   void callbackFunctionForBroadcaster(double measuredDecibal) {
     //After measuring noise level, calculate the distance
     calculateDistance(measuredDecibal);
-
   }
 
   void callbackFunctionForListener(double measuredDecibal) {
@@ -118,7 +116,6 @@ class SoundProximityDetection implements ProximityDetection{
   }
 
   void calculateDistance(double measuredDecibal) {
-    print(measuredDecibal);
     showDialog(
         context: bContext,
         builder: (_) => AlertDialog(

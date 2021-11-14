@@ -47,18 +47,12 @@ class _PagesState extends State<Pages> {
       checkStarted: () {return false;},
       disposeMethod: WifiProximityDetection.instance.disposeMethod,
     ),
-    ProximityDetectionPage(
-      onButtonPressed: SoundProximityDetection.instance.listenForSignal,
-      checkStarted: SoundProximityDetection.instance.getIsRunning,
-      disposeMethod: SoundProximityDetection.instance.disposeMethod,
-    ),
     BlockchainSyncPage(),
     SQLTestingPage(),
   ];
   List<String> titleStrings = [
     "Bluetooth Proximity Detection",
     "Wifi Proximity Detection",
-    "Sound Proximity Detection",
     "Blockchain Sync",
     "Testing SQLDatabase"
   ];

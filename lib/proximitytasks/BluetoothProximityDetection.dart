@@ -1,20 +1,26 @@
 import 'dart:math';
 import 'package:contact_tracing/proximitytasks/ProximityDetection.dart';
+import 'package:contact_tracing/utilities/UserInfo.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_connections/nearby_connections.dart';
+
+import 'SoundProximityDetection.dart';
 
 class BluetoothProximityDetection implements ProximityDetection{
   static BluetoothProximityDetection instance = new BluetoothProximityDetection();
   final Strategy _strategy = Strategy.P2P_CLUSTER;
   bool startedScan = false;
 
+  late BuildContext bContext;
+
   @override
   void printStuff() {
-    // TODO: implement printStuff
     print("This is the Bluetooth page");
   }
 
   void toggleProximityScan(BuildContext context) {
+    bContext = context;
+
     if(startedScan) {
       _stopProximityScan();
       startedScan = false;
@@ -39,16 +45,39 @@ class BluetoothProximityDetection implements ProximityDetection{
   void _stopProximityScan() {
     Nearby().stopDiscovery();
     Nearby().stopAdvertising();
+    SoundProximityDetection.instance.disposeMethod();
   }
 
   void _discover() async {
     try {
       bool a = await Nearby().startDiscovery(
-         _getRandomString(5),
+         UserInfo.instance.userName,
           _strategy,
           onEndpointFound:
               (String id, String name, String serviceId) {
-            print('Discover found id=$id with name:$name');
+                 //TODO: check if have discovered this before
+                  showDialog(
+                      context: bContext,
+                      builder: (_) => AlertDialog(
+                        title: Text('Discover found ${name}'),
+                        content: Text('Id is ${id}'),
+                      )
+                  );
+
+                  //TODO: check if need to request connection
+                  if(UserInfo.instance.userName.compareTo(name) > 0) {
+                    return;
+                  }
+
+                  Nearby().requestConnection(
+                      UserInfo.instance.userName,
+                      id,
+                      onConnectionInitiated: onConnectionInitiated,
+                      onConnectionResult: (id, status){print(status);},
+                      onDisconnected: (id){}
+                  );
+
+                  SoundProximityDetection.instance.listenForSignal(bContext);
           },
           onEndpointLost: (id) {
             print('Discover lost id:$id');
@@ -61,10 +90,11 @@ class BluetoothProximityDetection implements ProximityDetection{
   void _advertise() async {
     try {
       bool a = await Nearby().startAdvertising(
-        _getRandomString(5),
+          UserInfo.instance.userName,
         _strategy,
         onConnectionInitiated: (String id, ConnectionInfo info) {
-          print("Advertise initiated id=$id");
+          onConnectionInitiated(id, info);
+          SoundProximityDetection.instance.broadcastSignal(bContext);
         },
         onConnectionResult: (String id, Status status){
           print("Advertise resulted id=$id");
@@ -80,37 +110,29 @@ class BluetoothProximityDetection implements ProximityDetection{
 
   Future<bool> _getPermissions(BuildContext context) async {
     Nearby().askLocationAndExternalStoragePermission();
-
-    //Code below doesn't work for some reason
-    // if(! await Nearby().checkLocationPermission()) {
-    //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    //       content: Text("Location permission not granted :)")));
-    //   return false;
-    // }
-
-    // if(! await Nearby().checkExternalStoragePermission()) {
-    //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    //       content: Text("External storage permission not granted :)")));
-    //   return false;
-    // }
-
-    // if(! await Nearby().checkLocationEnabled()) {
-    //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    //       content: Text("Location not enabled")));
-    //   return false;
-    // }
-
     return true;
-  }
-
-  String _getRandomString(int len) {
-    var r = Random();
-    return String.fromCharCodes(List.generate(len, (index) => r.nextInt(33) + 89));
   }
 
   @override
   void disposeMethod() {
     // TODO: implement disposeMethod
   }
+
+  void onConnectionInitiated(String id, ConnectionInfo info) {
+    //save this connection to sql first, then see if need to arrange for broadcast
+    Nearby().acceptConnection(
+        id,
+        onPayLoadRecieved: (endpointId, payload) {
+          // called whenever a payload is recieved.
+        },
+        onPayloadTransferUpdate: (endpointId, payloadTransferUpdate) {
+        // gives status of a payload
+        // e.g success/failure/in_progress
+        // bytes transferred and total bytes etc
+        }
+    );
+  }
+
+
 
 }

@@ -32,6 +32,9 @@ class SoundPlayer {
   }
 
   void dispose() {
-    SoundGenerator.release();
+    //Toggle signal off
+    if(getIsPlaying()) {
+      toggleSignal();
+    }
   }
 }
