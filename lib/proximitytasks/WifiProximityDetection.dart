@@ -9,4 +9,9 @@ class WifiProximityDetection implements ProximityDetection {
     print("This is the Wifi Page");
   }
 
+  @override
+  void disposeMethod() {
+    // TODO: implement disposeMethod
+  }
+
 }

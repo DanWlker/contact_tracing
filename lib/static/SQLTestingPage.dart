@@ -1,4 +1,4 @@
-import 'package:contact_tracing/LocalStorage/SQLiteHelper.dart';
+import 'package:contact_tracing/utilities/SQLiteHelper.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 

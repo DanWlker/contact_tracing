@@ -1,4 +1,3 @@
-import 'package:contact_tracing/entity/IndvCloseContact.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
