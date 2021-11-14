@@ -8,7 +8,7 @@ import 'SoundProximityDetection.dart';
 
 class BluetoothProximityDetection implements ProximityDetection{
   static BluetoothProximityDetection instance = new BluetoothProximityDetection();
-  final Strategy _strategy = Strategy.P2P_CLUSTER;
+  final Strategy _strategy = Strategy.P2P_POINT_TO_POINT;
   bool startedScan = false;
 
   late BuildContext bContext;
@@ -64,8 +64,7 @@ class BluetoothProximityDetection implements ProximityDetection{
                       )
                   );
 
-                  //TODO: check if need to request connection
-                  if(UserInfo.instance.userName.compareTo(name) > 0) {
+                  if(UserInfo.instance.userName.compareTo(name) > 0) { //check if need to request connection
                     return;
                   }
 
@@ -78,6 +77,10 @@ class BluetoothProximityDetection implements ProximityDetection{
                   );
 
                   SoundProximityDetection.instance.listenForSignal(bContext);
+
+                  Future.delayed(Duration(seconds: 5), () {
+                    disconnectMethod();
+                  });
           },
           onEndpointLost: (id) {
             print('Discover lost id:$id');
@@ -91,18 +94,22 @@ class BluetoothProximityDetection implements ProximityDetection{
     try {
       bool a = await Nearby().startAdvertising(
           UserInfo.instance.userName,
-        _strategy,
-        onConnectionInitiated: (String id, ConnectionInfo info) {
-          onConnectionInitiated(id, info);
-          SoundProximityDetection.instance.broadcastSignal(bContext);
-        },
-        onConnectionResult: (String id, Status status){
-          print("Advertise resulted id=$id");
-        },
-        onDisconnected: (String id){
-          print("Advertise disconnected id=$id");
-        }
-      );
+          _strategy,
+          onConnectionInitiated: (String id, ConnectionInfo info) {
+            onConnectionInitiated(id, info);
+            SoundProximityDetection.instance.broadcastSignal(bContext);
+            //TODO: disconnect or turn off everything after few secs
+            Future.delayed(Duration(seconds: 5), () {
+              disconnectMethod();
+            });
+          },
+          onConnectionResult: (String id, Status status){
+            print("Advertise resulted id=$id");
+          },
+          onDisconnected: (String id){
+            print("Advertise disconnected id=$id");
+          }
+          );
     } catch(e) {
       print(e);
     }
@@ -133,6 +140,10 @@ class BluetoothProximityDetection implements ProximityDetection{
     );
   }
 
-
+  void disconnectMethod() {
+    Nearby().stopAllEndpoints();
+    SoundProximityDetection.instance.disposeMethod();
+    _startProximityScan(bContext);
+  }
 
 }
