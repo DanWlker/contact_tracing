@@ -32,6 +32,7 @@ dependencies:
       url: https://github.com/mertguner/sound_generator
       ref: master
   sqflite:
+  lazy_load_scrollview:
 
 
   # The following adds the Cupertino Icons font to your application.

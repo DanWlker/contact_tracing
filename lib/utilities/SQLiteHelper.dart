@@ -78,4 +78,18 @@ class SQLiteHelper {
 
     return list[0]['MediumOfDetection'] == "Bluetooth, Sound";
   }
+
+  Future<List<Map>> getRecordsFrom(int length) async {
+    Database db = await getDatabase();
+    List<Map> list = await db.rawQuery('''
+      select * from CloseContactList order by id desc limit ${length}, ${length+10} 
+    ''');
+
+    return list;
+  }
+  
+  Future<void> deleteRecord(String name) async {
+    Database db = await getDatabase();
+    await db.rawDelete('DELETE FROM CloseContactList WHERE closecontactidentifier = ?', [name]);
+  }
 }

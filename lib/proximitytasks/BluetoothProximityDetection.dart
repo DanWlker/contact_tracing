@@ -67,13 +67,13 @@ class BluetoothProximityDetection implements ProximityDetection{
                   else
                     await SQLiteHelper.instance.insertIntoDatabase(name, "Bluetooth");
 
-                  showDialog(
-                      context: bContext,
-                      builder: (_) => AlertDialog(
-                        title: Text('Discover found ${name}'),
-                        content: Text('Id is ${id}'),
-                      )
-                  );
+                  // showDialog(
+                  //     context: bContext,
+                  //     builder: (_) => AlertDialog(
+                  //       title: Text('Discover found ${name}'),
+                  //       content: Text('Id is ${id}'),
+                  //     )
+                  // );
 
                   if(UserInfo.instance.userName.compareTo(name) > 0) { //check if need to request connection
                     return;
@@ -113,13 +113,13 @@ class BluetoothProximityDetection implements ProximityDetection{
             devAcceptConnection(id, info);
             SoundProximityDetection.instance.broadcastSignal(bContext, info.endpointName);
 
-            showDialog(
-                context: bContext,
-                builder: (_) => AlertDialog(
-                  title: Text('Advertise found ${info.endpointName}'),
-                  content: Text('Id is ${id}'),
-                )
-            );
+            // showDialog(
+            //     context: bContext,
+            //     builder: (_) => AlertDialog(
+            //       title: Text('Advertise found ${info.endpointName}'),
+            //       content: Text('Id is ${id}'),
+            //     )
+            // );
 
             //TODO: disconnect or turn off everything after few secs
             Future.delayed(Duration(seconds: 5), () {
