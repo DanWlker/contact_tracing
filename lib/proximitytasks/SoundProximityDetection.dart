@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:contact_tracing/proximitytasks/ProximityDetection.dart';
+import 'package:contact_tracing/utilities/SQLiteHelper.dart';
 import 'package:contact_tracing/utilities/SoundListener.dart';
 import 'package:contact_tracing/utilities/SoundPlayer.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,14 +13,16 @@ class SoundProximityDetection implements ProximityDetection{
   int testsRunned = 0;
   double defaultDecibalLevel = 0;
   late BuildContext bContext;
+  late String nameOfUserToCheck;
 
   @override
   void printStuff() {
     print("This is the Sound page");
   }
 
-  void broadcastSignal(BuildContext context) {
+  void broadcastSignal(BuildContext context, String nameOfOtherPhone) {
     bContext = context;
+    nameOfUserToCheck = nameOfOtherPhone;
 
     // if(this.defaultDecibalLevel == 0 ) {
     //   startOwnSignalLoudnessTest();
@@ -35,8 +38,9 @@ class SoundProximityDetection implements ProximityDetection{
     SoundListener.instance.toggleListener(this.callbackFunctionForBroadcaster);
   }
 
-  void listenForSignal(BuildContext context) {
+  void listenForSignal(BuildContext context, String nameOfOtherPhone) {
     bContext = context;
+    nameOfUserToCheck = nameOfOtherPhone;
     // if(this.defaultDecibalLevel == 0) {
     //   startOwnSignalLoudnessTest();
     //   return;
@@ -93,6 +97,7 @@ class SoundProximityDetection implements ProximityDetection{
   void callbackFunctionForBroadcaster(double measuredDecibal) {
     //After measuring noise level, calculate the distance
     calculateDistance(measuredDecibal);
+    SQLiteHelper.instance.updateRow(nameOfUserToCheck, "Bluetooth, Sound", "-");
   }
 
   void callbackFunctionForListener(double measuredDecibal) {
@@ -106,7 +111,8 @@ class SoundProximityDetection implements ProximityDetection{
     });
 
     //After returning, calculate distance
-    calculateDistance(measuredDecibal);
+    //calculateDistance(measuredDecibal);
+    SQLiteHelper.instance.updateRow(nameOfUserToCheck, "Bluetooth, Sound", "-");
   }
 
   void callbackFunctionOwnSignalLoudnessTest(double measuredDecibal) {
