@@ -43,7 +43,7 @@ class NavDrawer extends StatelessWidget{
     return Text(
       title,
       style: TextStyle(
-        fontSize: 13
+        fontSize: 17
       ),
     );
   }

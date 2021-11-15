@@ -1,7 +1,5 @@
 import 'package:contact_tracing/NavDrawer.dart';
 import 'package:contact_tracing/proximitytasks/BluetoothProximityDetection.dart';
-import 'package:contact_tracing/proximitytasks/SoundProximityDetection.dart';
-import 'package:contact_tracing/proximitytasks/WifiProximityDetection.dart';
 import 'package:flutter/material.dart';
 import 'package:contact_tracing/static/ProximityDetectionPage.dart';
 import 'package:contact_tracing/static/BlockchainSyncPage.dart';
