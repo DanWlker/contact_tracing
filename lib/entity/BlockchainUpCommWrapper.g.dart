@@ -11,7 +11,7 @@ BlockchainUpCommWrapper _$BlockchainUpCommWrapperFromJson(
     BlockchainUpCommWrapper(
       json['publicKey'] as String,
       Case.fromJson(json['ledger'] as Map<String, dynamic>),
-      json['signature'] as String,
+      json['signature'] as Map<String, dynamic>,
     );
 
 Map<String, dynamic> _$BlockchainUpCommWrapperToJson(

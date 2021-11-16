@@ -35,7 +35,7 @@ dependencies:
   lazy_load_scrollview: ^1.3.0
   http: ^0.13.4
   nearby_connections: ^3.1.0
-  crypto_keys: ^0.3.0
+  crypton: ^2.0.3
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
