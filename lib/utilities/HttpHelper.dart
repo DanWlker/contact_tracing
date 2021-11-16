@@ -1,9 +1,9 @@
 import 'dart:convert';
+import 'package:contact_tracing/entity/Block.dart';
 import 'package:contact_tracing/entity/BlockchainUpCommWrapper.dart';
 import 'package:contact_tracing/entity/Case.dart';
 import 'package:contact_tracing/entity/IndvCloseContact.dart';
 import 'package:contact_tracing/utilities/CryptoHelper.dart';
-import 'package:contact_tracing/utilities/MockDoctorSignature.dart';
 import 'package:contact_tracing/utilities/SQLiteHelper.dart';
 import 'package:contact_tracing/utilities/UserInfo.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,7 +12,7 @@ import 'package:http/http.dart' as http;
 class HttpHelper {
   static HttpHelper instance = HttpHelper();
 
-  Future<http.Response> uploadEncounters(String address) async {
+  Future<http.Response> uploadEncounters(String address, String signature) async {
 
     List<Map> allRecords = await SQLiteHelper.instance.returnAllRecordsAfter(
         DateTime.now().subtract(const Duration(days:14))
@@ -34,7 +34,7 @@ class HttpHelper {
     Case newCase = Case(
       UserInfo.instance.userName,
       tempList,
-      MockDoctorSignature.signature
+      signature
     );
 
     print(CryptoHelper.instance.getPublicKey());
@@ -57,12 +57,23 @@ class HttpHelper {
       );
 
     return http.post(
-      Uri.parse(address),
+      Uri.parse(address+"/insertCase"),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(wrapper.toJson()),
     );
+  }
+
+  Future<void> downloadEncounters(String address, String identifierToFind, Function loader) async {
+    final response = await http.get(Uri.parse(address+"/getAllCases"));
+    List<Block> tempList = [];
+
+    for(var item in json.decode(response.body)) {
+      tempList.add(Block.fromJson(item));
+    }
+
+    loader(tempList, identifierToFind);
   }
 
 }

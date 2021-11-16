@@ -92,7 +92,7 @@ class _ProximityDetectionPageState extends State<ProximityDetectionPage> {
                     Icons.refresh,
                     size: 25,
                   ),
-                  label: Text("Refresh"),
+                  label: Text("Tap to Refresh"),
                 ),
                 SizedBox(height:15),
                 FloatingActionButton.extended(
@@ -115,7 +115,7 @@ class _ProximityDetectionPageState extends State<ProximityDetectionPage> {
                           Icons.arrow_right_sharp,
                           size: 45,
                         ),
-                  label: isRunning? Text("Stop"): Text("Start"),
+                  label: isRunning? Text("Tap to Stop"): Text("Tap to Start"),
                 ),
 
               ],
