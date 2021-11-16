@@ -130,8 +130,19 @@ class _ProximityDetectionPageState extends State<ProximityDetectionPage> {
       child:Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: (){
+                SQLiteHelper.instance.deleteRecord(data[position]["CloseContactIdentifier"]);
+                data.clear();
+                setState((){
+                  _loadMore();
+                });
+              },
+            ),
+            SizedBox(width: 10),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -141,16 +152,7 @@ class _ProximityDetectionPageState extends State<ProximityDetectionPage> {
                 generateRichText("Estimated Duration: ", data[position]["EstimatedDurationOfContact"])
               ],
             ),
-            IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: (){
-                SQLiteHelper.instance.deleteRecord(data[position]["CloseContactIdentifier"]);
-                data.clear();
-                setState((){
-                  _loadMore();
-                });
-                },
-            )
+
           ],
         )
       )

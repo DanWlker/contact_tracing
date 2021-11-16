@@ -1,3 +1,5 @@
+import 'package:contact_tracing/entity/IndvCloseContact.dart';
+import 'package:contact_tracing/utilities/UserInfo.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -25,6 +27,7 @@ class SQLiteHelper {
       id integer primary key not null,
       CloseContactIdentifier varchar(255), 
       DateOfContact varchar(255),
+      DistanceOfContactMetres varchar(255),
       MediumOfDetection varchar(255),
       EstimatedDurationOfContact varchar(255)
      )
@@ -91,5 +94,20 @@ class SQLiteHelper {
   Future<void> deleteRecord(String name) async {
     Database db = await getDatabase();
     await db.rawDelete('DELETE FROM CloseContactList WHERE closecontactidentifier = ?', [name]);
+  }
+
+  Future<List<Map>> returnAllRecordsAfter(DateTime date) async {
+    Database db = await getDatabase();
+    List<Map> list = await db.rawQuery('''
+    select * from CloseContactList
+    ''');
+
+    List<Map> tempList = [];
+    for (var items in list) {
+      if(DateTime.parse(items['DateOfContact']).isAfter(date)) {
+        tempList.add(items);
+      }
+    }
+    return tempList;
   }
 }
