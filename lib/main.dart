@@ -1,7 +1,5 @@
 import 'package:contact_tracing/NavDrawer.dart';
 import 'package:contact_tracing/proximitytasks/BluetoothProximityDetection.dart';
-import 'package:contact_tracing/proximitytasks/SoundProximityDetection.dart';
-import 'package:contact_tracing/proximitytasks/WifiProximityDetection.dart';
 import 'package:flutter/material.dart';
 import 'package:contact_tracing/static/ProximityDetectionPage.dart';
 import 'package:contact_tracing/static/BlockchainSyncPage.dart';
@@ -42,17 +40,11 @@ class _PagesState extends State<Pages> {
       checkStarted: BluetoothProximityDetection.instance.getStartStop,
       disposeMethod: BluetoothProximityDetection.instance.disposeMethod,
     ),
-    ProximityDetectionPage(
-      onButtonPressed: WifiProximityDetection.instance.printStuff,
-      checkStarted: () {return false;},
-      disposeMethod: WifiProximityDetection.instance.disposeMethod,
-    ),
     BlockchainSyncPage(),
     SQLTestingPage(),
   ];
   List<String> titleStrings = [
     "Bluetooth Proximity Detection",
-    "Wifi Proximity Detection",
     "Blockchain Sync",
     "Testing SQLDatabase"
   ];

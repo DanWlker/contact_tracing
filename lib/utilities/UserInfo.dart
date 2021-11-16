@@ -10,8 +10,10 @@ class UserInfo {
   }
 
   String _getRandomString(int len) {
-    var r = Random();
-    return String.fromCharCodes(List.generate(len, (index) => r.nextInt(33) + 89));
+    const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+    Random _rnd = Random();
+
+    return String.fromCharCodes(Iterable.generate(len, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
   }
 
 }

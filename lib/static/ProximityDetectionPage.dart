@@ -1,4 +1,6 @@
+import 'package:contact_tracing/utilities/SQLiteHelper.dart';
 import 'package:flutter/material.dart';
+import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 
 class ProximityDetectionPage extends StatefulWidget {
   final Function onButtonPressed;
@@ -13,6 +15,31 @@ class ProximityDetectionPage extends StatefulWidget {
 
 class _ProximityDetectionPageState extends State<ProximityDetectionPage> {
   bool isRunning = false;
+
+  final int increment = 10;
+  bool isLoading = false;
+  List<Map> data = [];
+  int currentLength = 0;
+
+  @override
+  void initState() {
+    _loadMore();
+    super.initState();
+  }
+
+  Future _loadMore() async {
+     setState((){
+       isLoading = true;
+     });
+
+     //load stuff from sql
+     data += await SQLiteHelper.instance.getRecordsFrom(data.length);
+
+     setState((){
+       isLoading = false;
+       currentLength = data.length;
+     });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +58,17 @@ class _ProximityDetectionPageState extends State<ProximityDetectionPage> {
                   ),
                 ),
               ),
+              SizedBox(height:15),
               Expanded(
-                child: ListView(
-                  children: generateLists(),
+                child: LazyLoadScrollView(
+                  isLoading: isLoading,
+                  onEndOfPage: () => _loadMore(),
+                  child: ListView.builder(
+                    itemCount: data.length,
+                    itemBuilder: (context, position) {
+                      return cardBuilder(position);
+                    }
+                  )
                 ),
               ),
             ],
@@ -43,7 +78,23 @@ class _ProximityDetectionPageState extends State<ProximityDetectionPage> {
           bottom: 20,
             right: 20,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
+                FloatingActionButton.extended(
+                  onPressed: (){
+                    data.clear();
+                    setState((){
+                      _loadMore();
+                    });
+                  },
+                  tooltip: 'Filter',
+                  icon: Icon(
+                    Icons.refresh,
+                    size: 25,
+                  ),
+                  label: Text("Refresh"),
+                ),
+                SizedBox(height:15),
                 FloatingActionButton.extended(
                   onPressed: (){
                     widget.onButtonPressed(context);
@@ -62,10 +113,11 @@ class _ProximityDetectionPageState extends State<ProximityDetectionPage> {
                   tooltip: 'Filter',
                   icon: Icon(
                           Icons.arrow_right_sharp,
-                          size: 40,
+                          size: 45,
                         ),
-                  label: isRunning? Text("Stop proximity detection"): Text("Start proximity detection"),
+                  label: isRunning? Text("Stop"): Text("Start"),
                 ),
+
               ],
             )
         )
@@ -73,22 +125,54 @@ class _ProximityDetectionPageState extends State<ProximityDetectionPage> {
     );
   }
 
-  List<Widget> generateLists() {
-    List<Widget> temp = [];
-    for(int i = 0; i < 15; ++i) {
-      temp.add(returnExample());
-    }
-    return temp;
+  Card cardBuilder(int position) {
+    return Card(
+      child:Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: (){
+                SQLiteHelper.instance.deleteRecord(data[position]["CloseContactIdentifier"]);
+                data.clear();
+                setState((){
+                  _loadMore();
+                });
+              },
+            ),
+            SizedBox(width: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                generateRichText("ID: ", data[position]["CloseContactIdentifier"]),
+                generateRichText("Contact Date and Time: ", data[position]["DateOfContact"]),
+                generateRichText("Detected by: ", data[position]["MediumOfDetection"]),
+                generateRichText("Estimated Duration: ", data[position]["EstimatedDurationOfContact"])
+              ],
+            ),
+
+          ],
+        )
+      )
+    );
   }
 
-  ListTile returnExample() {
-    return ListTile(
-      title: Text('Three-line ListTile'),
-      subtitle: Text(
-          'A sufficiently long subtitle warrants three lines.'
+  Text generateRichText(String label, String value) {
+    return Text.rich(
+      TextSpan(
+        children: [
+          TextSpan(
+              text: label,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14.5)
+          ),
+          TextSpan(
+              text: value,
+              style: TextStyle(fontSize: 14.5)
+          )
+        ],
       ),
-
-      isThreeLine: true,
     );
   }
 

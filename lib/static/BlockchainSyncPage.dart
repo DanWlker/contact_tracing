@@ -1,3 +1,4 @@
+import 'package:contact_tracing/utilities/HttpHelper.dart';
 import 'package:flutter/material.dart';
 
 class BlockchainSyncPage extends StatefulWidget {
@@ -8,6 +9,8 @@ class BlockchainSyncPage extends StatefulWidget {
 }
 
 class _BlockchainSyncPageState extends State<BlockchainSyncPage> {
+  final myController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -20,6 +23,7 @@ class _BlockchainSyncPageState extends State<BlockchainSyncPage> {
                 decoration: InputDecoration(
                   labelText: "Sync to address: "
                 ),
+                controller: myController,
               ),
               SizedBox(
                 height: 30,
@@ -48,6 +52,7 @@ class _BlockchainSyncPageState extends State<BlockchainSyncPage> {
             child: FloatingActionButton.extended(
              onPressed: () {
                //@Todo implment sync on button press
+               HttpHelper.instance.uploadEncounters(myController.text);
              },
               icon: Icon(Icons.sync),
               label: Text("Tap to sync"),

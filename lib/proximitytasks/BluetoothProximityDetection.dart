@@ -1,14 +1,16 @@
 import 'dart:math';
 import 'package:contact_tracing/proximitytasks/ProximityDetection.dart';
+import 'package:contact_tracing/utilities/SQLiteHelper.dart';
 import 'package:contact_tracing/utilities/UserInfo.dart';
 import 'package:flutter/material.dart';
 import 'package:nearby_connections/nearby_connections.dart';
+import 'package:sqflite/sqflite.dart';
 
 import 'SoundProximityDetection.dart';
 
 class BluetoothProximityDetection implements ProximityDetection{
   static BluetoothProximityDetection instance = new BluetoothProximityDetection();
-  final Strategy _strategy = Strategy.P2P_CLUSTER;
+  final Strategy _strategy = Strategy.P2P_POINT_TO_POINT;
   bool startedScan = false;
 
   late BuildContext bContext;
@@ -54,30 +56,42 @@ class BluetoothProximityDetection implements ProximityDetection{
          UserInfo.instance.userName,
           _strategy,
           onEndpointFound:
-              (String id, String name, String serviceId) {
+              (String id, String name, String serviceId) async {
                  //TODO: check if have discovered this before
-                  showDialog(
-                      context: bContext,
-                      builder: (_) => AlertDialog(
-                        title: Text('Discover found ${name}'),
-                        content: Text('Id is ${id}'),
-                      )
-                  );
+                  if(await SQLiteHelper.instance.checkDatabaseForUser(name)){
+                    if(await SQLiteHelper.instance.soundDiscovered(name)) {
+                      print("Hi");
+                      return;
+                    }
+                  } //if encountered before
+                  else
+                    await SQLiteHelper.instance.insertIntoDatabase(name, "Bluetooth");
 
-                  //TODO: check if need to request connection
-                  if(UserInfo.instance.userName.compareTo(name) > 0) {
+                  // showDialog(
+                  //     context: bContext,
+                  //     builder: (_) => AlertDialog(
+                  //       title: Text('Discover found ${name}'),
+                  //       content: Text('Id is ${id}'),
+                  //     )
+                  // );
+
+                  if(UserInfo.instance.userName.compareTo(name) > 0) { //check if need to request connection
                     return;
                   }
 
                   Nearby().requestConnection(
                       UserInfo.instance.userName,
                       id,
-                      onConnectionInitiated: onConnectionInitiated,
+                      onConnectionInitiated: devAcceptConnection,
                       onConnectionResult: (id, status){print(status);},
                       onDisconnected: (id){}
                   );
 
-                  SoundProximityDetection.instance.listenForSignal(bContext);
+                  SoundProximityDetection.instance.listenForSignal(bContext, name);
+
+                  Future.delayed(Duration(seconds: 5), () {
+                    disconnectMethod();
+                  });
           },
           onEndpointLost: (id) {
             print('Discover lost id:$id');
@@ -91,18 +105,34 @@ class BluetoothProximityDetection implements ProximityDetection{
     try {
       bool a = await Nearby().startAdvertising(
           UserInfo.instance.userName,
-        _strategy,
-        onConnectionInitiated: (String id, ConnectionInfo info) {
-          onConnectionInitiated(id, info);
-          SoundProximityDetection.instance.broadcastSignal(bContext);
-        },
-        onConnectionResult: (String id, Status status){
-          print("Advertise resulted id=$id");
-        },
-        onDisconnected: (String id){
-          print("Advertise disconnected id=$id");
-        }
-      );
+          _strategy,
+          onConnectionInitiated: (String id, ConnectionInfo info) async{
+            if(!await SQLiteHelper.instance.checkDatabaseForUser(info.endpointName))
+              await SQLiteHelper.instance.insertIntoDatabase(info.endpointName, "Bluetooth");
+
+            devAcceptConnection(id, info);
+            SoundProximityDetection.instance.broadcastSignal(bContext, info.endpointName);
+
+            // showDialog(
+            //     context: bContext,
+            //     builder: (_) => AlertDialog(
+            //       title: Text('Advertise found ${info.endpointName}'),
+            //       content: Text('Id is ${id}'),
+            //     )
+            // );
+
+            //TODO: disconnect or turn off everything after few secs
+            Future.delayed(Duration(seconds: 5), () {
+              disconnectMethod();
+            });
+          },
+          onConnectionResult: (String id, Status status){
+            print("Advertise resulted id=$id");
+          },
+          onDisconnected: (String id){
+            print("Advertise disconnected id=$id");
+          }
+          );
     } catch(e) {
       print(e);
     }
@@ -118,7 +148,7 @@ class BluetoothProximityDetection implements ProximityDetection{
     // TODO: implement disposeMethod
   }
 
-  void onConnectionInitiated(String id, ConnectionInfo info) {
+  void devAcceptConnection(String id, ConnectionInfo info) {
     //save this connection to sql first, then see if need to arrange for broadcast
     Nearby().acceptConnection(
         id,
@@ -133,6 +163,10 @@ class BluetoothProximityDetection implements ProximityDetection{
     );
   }
 
-
+  void disconnectMethod() {
+    Nearby().stopAllEndpoints();
+    SoundProximityDetection.instance.disposeMethod();
+    _startProximityScan(bContext);
+  }
 
 }
