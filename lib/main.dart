@@ -1,5 +1,6 @@
 import 'package:contact_tracing/NavDrawer.dart';
 import 'package:contact_tracing/proximitytasks/BluetoothProximityDetection.dart';
+import 'package:contact_tracing/static/HomePage.dart';
 import 'package:flutter/material.dart';
 import 'package:contact_tracing/static/ProximityDetectionPage.dart';
 import 'package:contact_tracing/static/BlockchainSyncPage.dart';
@@ -35,6 +36,7 @@ class Pages extends StatefulWidget {
 class _PagesState extends State<Pages> {
   int currentIndex = 0;
   List<Widget> currentChildren = [
+    HomePage(),
     ProximityDetectionPage(
       onButtonPressed: BluetoothProximityDetection.instance.toggleProximityScan,
       checkStarted: BluetoothProximityDetection.instance.getStartStop,
@@ -44,6 +46,7 @@ class _PagesState extends State<Pages> {
     SQLTestingPage(),
   ];
   List<String> titleStrings = [
+    "Home Page",
     "Bluetooth Proximity Detection",
     "Blockchain Sync",
     "Testing SQLDatabase"
