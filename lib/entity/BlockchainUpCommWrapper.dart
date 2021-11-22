@@ -8,7 +8,7 @@ part 'BlockchainUpCommWrapper.g.dart';
 class BlockchainUpCommWrapper {
   String publicKey;
   Case ledger;
-  String signature;
+  Map<String, dynamic> signature;
 
   BlockchainUpCommWrapper(
       this.publicKey,
