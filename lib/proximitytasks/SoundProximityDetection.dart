@@ -35,6 +35,7 @@ class SoundProximityDetection implements ProximityDetection{
     sleep(Duration(seconds:1));
     SoundPlayer.instance.toggleSignal();
     //TODO:start listening for signal's return
+    sleep(Duration(seconds:1));
     SoundListener.instance.toggleListener(this.callbackFunctionForBroadcaster);
   }
 
@@ -102,8 +103,8 @@ class SoundProximityDetection implements ProximityDetection{
 
   void callbackFunctionForListener(double measuredDecibal) {
     //TODO: after that return signal
-    int waitDurationMicroseconds = 1000000;
-    Future.delayed(Duration(microseconds: waitDurationMicroseconds), () {
+    int waitDurationSeconds = 2;
+    Future.delayed(Duration(seconds: waitDurationSeconds), () {
       // Here you can write your code
       SoundPlayer.instance.toggleSignal();
       sleep(Duration(seconds: 1));
