@@ -97,7 +97,7 @@ class SoundProximityDetection implements ProximityDetection{
 
   void callbackFunctionForBroadcaster(double measuredDecibal) {
     //After measuring noise level, calculate the distance
-    calculateDistance(measuredDecibal);
+    //calculateDistance(measuredDecibal);
     SQLiteHelper.instance.updateRow(nameOfUserToCheck, "Bluetooth, Sound", "-");
   }
 

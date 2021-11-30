@@ -60,7 +60,7 @@ class BluetoothProximityDetection implements ProximityDetection{
                  //TODO: check if have discovered this before
                   if(await SQLiteHelper.instance.checkDatabaseForUser(name)){
                     if(await SQLiteHelper.instance.soundDiscovered(name)) {
-                      print("Hi");
+                      print("Sound discovered before");
                       return;
                     }
                   } //if encountered before
