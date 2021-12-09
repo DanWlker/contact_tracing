@@ -149,7 +149,8 @@ class _ProximityDetectionPageState extends State<ProximityDetectionPage> {
                 generateRichText("ID: ", data[position]["CloseContactIdentifier"]),
                 generateRichText("Contact Date and Time: ", data[position]["DateOfContact"]),
                 generateRichText("Detected by: ", data[position]["MediumOfDetection"]),
-                generateRichText("Estimated Duration: ", data[position]["EstimatedDurationOfContact"])
+                generateRichText("Estimated Duration: ", data[position]["EstimatedDurationOfContact"]),
+                generateRichText("Distance from user: ", data[position]["DistanceOfContactMetres"] == null ? "no distance" : data[position]["DistanceOfContactMetres"])
               ],
             ),
 

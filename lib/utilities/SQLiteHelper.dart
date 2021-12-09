@@ -63,11 +63,11 @@ class SQLiteHelper {
                   ''');
   }
 
-  Future<void> updateRow(String name, String medium, String duration) async {
+  Future<void> updateRow(String name, String medium, String distance) async {
     Database db = await getDatabase();
     await db.rawUpdate(
-        'UPDATE CloseContactList SET mediumofdetection = ?, estimateddurationofcontact = ? WHERE closecontactidentifier = ?',
-        [medium, duration, name]);
+        'UPDATE CloseContactList SET mediumofdetection = ?, distanceofcontactmetres = ? WHERE closecontactidentifier = ?',
+        [medium, distance, name]);
   }
 
   Future<bool> soundDiscovered(String name) async {

@@ -97,8 +97,8 @@ class SoundProximityDetection implements ProximityDetection{
 
   void callbackFunctionForBroadcaster(double measuredDecibal) {
     //After measuring noise level, calculate the distance
-    //calculateDistance(measuredDecibal);
-    SQLiteHelper.instance.updateRow(nameOfUserToCheck, "Bluetooth, Sound", "-");
+    String nearOrFar = calculateDistance(measuredDecibal);
+    SQLiteHelper.instance.updateRow(nameOfUserToCheck, "Bluetooth, Sound", nearOrFar);
   }
 
   void callbackFunctionForListener(double measuredDecibal) {
@@ -112,8 +112,8 @@ class SoundProximityDetection implements ProximityDetection{
     });
 
     //After returning, calculate distance
-    //calculateDistance(measuredDecibal);
-    SQLiteHelper.instance.updateRow(nameOfUserToCheck, "Bluetooth, Sound", "-");
+    String nearOrFar = calculateDistance(measuredDecibal);
+    SQLiteHelper.instance.updateRow(nameOfUserToCheck, "Bluetooth, Sound", nearOrFar);
   }
 
   void callbackFunctionOwnSignalLoudnessTest(double measuredDecibal) {
@@ -122,13 +122,22 @@ class SoundProximityDetection implements ProximityDetection{
     stopOwnSignalLoudnessTest();
   }
 
-  void calculateDistance(double measuredDecibal) {
+  String calculateDistance(double measuredDecibal) {
+    String nearOrFar = "";
+    if(measuredDecibal > 70) {
+      nearOrFar = "Near";
+    } else {
+      nearOrFar = "Far";
+    }
+
     showDialog(
         context: bContext,
         builder: (_) => AlertDialog(
-          title: Text('Result for decibel = ${measuredDecibal}'),
-          content: Text('Welp'),
+          title: Text('Result for decibel = ${nearOrFar}, Estimated Distance ='),
+          content: Text(measuredDecibal.toString()),
         )
     );
+
+    return nearOrFar;
   }
 }
