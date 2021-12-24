@@ -80,7 +80,10 @@ class HttpHelper {
     final response = await http.get(Uri.parse(address+"/getAllCases"));
     List<Block> tempList = [];
 
-    for(var item in json.decode(response.body)) {
+
+    print(json.decode(response.body)["chain"]);
+
+    for(var item in json.decode(response.body)["chain"]) {
       tempList.add(Block.fromJson(item));
     }
 
