@@ -8,6 +8,9 @@ import 'package:contact_tracing/utilities/SQLiteHelper.dart';
 import 'package:contact_tracing/utilities/UserInfo.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:crypto/crypto.dart';
+
+import 'MockDoctor.dart';
 
 class HttpHelper {
   static HttpHelper instance = HttpHelper();
@@ -30,24 +33,32 @@ class HttpHelper {
           )
       );
     }
+
+    String thingToGiveDiagnostician = CryptoHelper().getPublicKey() + jsonEncode(tempList).toString();
+    String hashOfThingToGiveDiagnostician = sha256.convert(utf8.encode(thingToGiveDiagnostician)).toString();
+    print("Hash to send to doctor: " + hashOfThingToGiveDiagnostician);
+
+    Map<String, dynamic> MockDoctorSignatureFormat = {
+      "type": "Buffer",
+      "data": MockDoctor.instance.signThis(hashOfThingToGiveDiagnostician).toList()
+    };
     
     Case newCase = Case(
-      UserInfo.instance.userName,
+      CryptoHelper.instance.getPublicKey(),
       tempList,
-      signature
+      MockDoctorSignatureFormat.toString()
     );
 
-    print(CryptoHelper.instance.getPublicKey());
 
     String newCaseJson = jsonEncode(newCase).toString();
-    print(newCaseJson);
+    print("New case to upload: " + newCaseJson);
 
     Map<String, dynamic> signatureFormat = {
       "type": "Buffer",
       "data": CryptoHelper.instance.signThis(newCaseJson).toList()
     };
 
-    print(signatureFormat.toString());
+    print("Signature format: " + signatureFormat.toString());
 
     BlockchainUpCommWrapper wrapper =
       BlockchainUpCommWrapper(
@@ -69,7 +80,10 @@ class HttpHelper {
     final response = await http.get(Uri.parse(address+"/getAllCases"));
     List<Block> tempList = [];
 
-    for(var item in json.decode(response.body)) {
+
+    print(json.decode(response.body)["chain"]);
+
+    for(var item in json.decode(response.body)["chain"]) {
       tempList.add(Block.fromJson(item));
     }
 

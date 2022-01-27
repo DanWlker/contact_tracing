@@ -60,7 +60,7 @@ class BluetoothProximityDetection implements ProximityDetection{
                  //TODO: check if have discovered this before
                   if(await SQLiteHelper.instance.checkDatabaseForUser(name)){
                     if(await SQLiteHelper.instance.soundDiscovered(name)) {
-                      print("Hi");
+                      print("Sound discovered before");
                       return;
                     }
                   } //if encountered before
@@ -82,16 +82,18 @@ class BluetoothProximityDetection implements ProximityDetection{
                   Nearby().requestConnection(
                       UserInfo.instance.userName,
                       id,
-                      onConnectionInitiated: devAcceptConnection,
+                      onConnectionInitiated: (str, connInfo){
+                        SoundProximityDetection.instance.listenForSignal(bContext, name);
+
+                        Future.delayed(Duration(seconds: 5), () {
+                          disconnectMethod();
+                        });
+                      },
                       onConnectionResult: (id, status){print(status);},
                       onDisconnected: (id){}
                   );
 
-                  SoundProximityDetection.instance.listenForSignal(bContext, name);
 
-                  Future.delayed(Duration(seconds: 5), () {
-                    disconnectMethod();
-                  });
           },
           onEndpointLost: (id) {
             print('Discover lost id:$id');
@@ -111,7 +113,10 @@ class BluetoothProximityDetection implements ProximityDetection{
               await SQLiteHelper.instance.insertIntoDatabase(info.endpointName, "Bluetooth");
 
             devAcceptConnection(id, info);
-            SoundProximityDetection.instance.broadcastSignal(bContext, info.endpointName);
+            Future.delayed(Duration(seconds: 2), () {
+              SoundProximityDetection.instance.broadcastSignal(bContext, info.endpointName);
+            });
+
 
             // showDialog(
             //     context: bContext,
@@ -122,7 +127,7 @@ class BluetoothProximityDetection implements ProximityDetection{
             // );
 
             //TODO: disconnect or turn off everything after few secs
-            Future.delayed(Duration(seconds: 5), () {
+            Future.delayed(Duration(seconds: 10), () {
               disconnectMethod();
             });
           },

@@ -36,7 +36,6 @@ class Pages extends StatefulWidget {
 class _PagesState extends State<Pages> {
   int currentIndex = 0;
   List<Widget> currentChildren = [
-    HomePage(),
     ProximityDetectionPage(
       onButtonPressed: BluetoothProximityDetection.instance.toggleProximityScan,
       checkStarted: BluetoothProximityDetection.instance.getStartStop,
@@ -46,7 +45,6 @@ class _PagesState extends State<Pages> {
     SQLTestingPage(),
   ];
   List<String> titleStrings = [
-    "Home Page",
     "Bluetooth Proximity Detection",
     "Blockchain Sync",
     "Testing SQLDatabase"

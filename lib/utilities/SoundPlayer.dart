@@ -6,7 +6,7 @@ class SoundPlayer {
   bool isPlaying = false;
 
   void toggleSignal() {
-    double frequency = 440;
+    double frequency = 5040;
     double balance = 0;
     double volume = 1;
     waveTypes waveType = waveTypes.SINUSOIDAL;

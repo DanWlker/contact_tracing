@@ -35,6 +35,7 @@ class SoundProximityDetection implements ProximityDetection{
     sleep(Duration(seconds:1));
     SoundPlayer.instance.toggleSignal();
     //TODO:start listening for signal's return
+    sleep(Duration(seconds:1));
     SoundListener.instance.toggleListener(this.callbackFunctionForBroadcaster);
   }
 
@@ -96,14 +97,14 @@ class SoundProximityDetection implements ProximityDetection{
 
   void callbackFunctionForBroadcaster(double measuredDecibal) {
     //After measuring noise level, calculate the distance
-    calculateDistance(measuredDecibal);
-    SQLiteHelper.instance.updateRow(nameOfUserToCheck, "Bluetooth, Sound", "-");
+    String nearOrFar = calculateDistance(measuredDecibal);
+    SQLiteHelper.instance.updateRow(nameOfUserToCheck, "Bluetooth, Sound", nearOrFar);
   }
 
   void callbackFunctionForListener(double measuredDecibal) {
     //TODO: after that return signal
-    int waitDurationMicroseconds = 1000000;
-    Future.delayed(Duration(microseconds: waitDurationMicroseconds), () {
+    int waitDurationSeconds = 2;
+    Future.delayed(Duration(seconds: waitDurationSeconds), () {
       // Here you can write your code
       SoundPlayer.instance.toggleSignal();
       sleep(Duration(seconds: 1));
@@ -111,8 +112,8 @@ class SoundProximityDetection implements ProximityDetection{
     });
 
     //After returning, calculate distance
-    //calculateDistance(measuredDecibal);
-    SQLiteHelper.instance.updateRow(nameOfUserToCheck, "Bluetooth, Sound", "-");
+    String nearOrFar = calculateDistance(measuredDecibal);
+    SQLiteHelper.instance.updateRow(nameOfUserToCheck, "Bluetooth, Sound", nearOrFar);
   }
 
   void callbackFunctionOwnSignalLoudnessTest(double measuredDecibal) {
@@ -121,13 +122,22 @@ class SoundProximityDetection implements ProximityDetection{
     stopOwnSignalLoudnessTest();
   }
 
-  void calculateDistance(double measuredDecibal) {
+  String calculateDistance(double measuredDecibal) {
+    String nearOrFar = "";
+    if(measuredDecibal > 70) {
+      nearOrFar = "Near";
+    } else {
+      nearOrFar = "Far";
+    }
+
     showDialog(
         context: bContext,
         builder: (_) => AlertDialog(
-          title: Text('Result for decibel = ${measuredDecibal}'),
-          content: Text('Welp'),
+          title: Text('Result for decibel = ${nearOrFar}, Estimated Distance ='),
+          content: Text(measuredDecibal.toString()),
         )
     );
+
+    return nearOrFar;
   }
 }

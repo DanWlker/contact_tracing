@@ -58,8 +58,8 @@ class SoundListener {
 
     //after listening and processing
     if(
-      result.pitch <= 455 &&
-      result.pitch >= 430
+      result.pitch <= 5080 &&
+      result.pitch >= 5000
     ) { //if the frequency is correct or smt, call back the function
       instance._stopCapture();
       this.isListening = false;
